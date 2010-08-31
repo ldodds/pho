@@ -1,0 +1,74 @@
+The Pho ruby module provides a lightweight Ruby client library for interacting with the Talis 
+Platform API (http://n2.talis.com/wiki/Platform_API).
+
+== Author
+ 
+Leigh Dodds (leigh.dodds@talis.com)
+
+== Download
+
+Pho is packaged as a Ruby Gem and can be downloaded from:
+
+http://rubygems.org/gems/pho
+
+As of release 0.7.4 the source for the project is maintained in github at:
+
+http://github.com/ldodds/pho
+
+Earlier versions of the source, plus the RDoc can be accessed from:
+
+http://pho.rubyforge.net
+
+== Installation
+
+From the 0.5 release onwards, Pho is dependent on the Ruby bindings for the Redland RDF library.
+Ensure you have the librdf0 and librdf-ruby packages installed.
+
+All other dependencies are for specific Ruby gems which should get automatically installed, 
+along with the Pho gem itself, by running:
+
+  sudo gem install pho
+
+== Usage
+
+To use Pho you can:
+
+   require 'pho'
+
+And then create an instance of the appropriate class, e.g Store:
+
+   store = Pho::Store.new("http://api.talis.com/testing", "user", "pass")
+   response = store.describe("http://www.example.org")
+
+For more detailed examples consult the documentation for the Store class
+
+== Control over HTTP interactions
+
+Pho is dependent on the HTTPClient module and all HTTP interactions are delegated to 
+an instance of the HTTPClient class. In circumstances where greater control over the 
+HTTP interaction is required, e.g. to configure proxy servers, etc, an existing instance of 
+this class can be provided, e.g:
+
+  client = HTTPClient.new
+  => configure client as required
+  store = Pho::Store.new("http://api.talis.com/testing", "user", "pass", client)
+  => pass instance of client as parameter
+  response = store.describe("http://www.example.org")
+
+== License
+
+Copyright 2009 Leigh Dodds 
+ 
+Licensed under the Apache License, Version 2.0 (the "License"); 
+you may not use this file except in compliance with the License. 
+  
+You may obtain a copy of the License at 
+  
+http://www.apache.org/licenses/LICENSE-2.0 
+  
+Unless required by applicable law or agreed to in writing, 
+software distributed under the License is distributed on an "AS IS" BASIS, 
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+  
+See the License for the specific language governing permissions and limitations 
+under the License. 

@@ -1,0 +1,110 @@
+Brief notes on significant changes and additions in each release
+
+== Version 0.7.4
+
+* Moved version control to github.
+* Added store.name property
+* Added remove_all methods to FieldPredicateMap and QueryProfile
+
+== Version 0.7.3
+
+* Fixed bug in Snapshot result parsing, now returns nil if no snapshot for store
+* Fixed bug in SparqlHelper when handling rows with no result binding
+
+== Version 0.7.2
+
+* Now parses full OAI response, support for listing records between dates and resumption tokens
+
+== Version 0.7.1
+
+* Bug fix for changeset generation, escaping of & in literals
+
+== Version 0.7
+
+* Started on OAI client
+* New commandline options: add_mapping and add_weight
+* Updated talis_store so that it now supports environment variables for user, pass, store (TALIS_USER, TALIS_PASS, TALIS_STORE)
+* Added getfpmap and getqueryprofile methods to command-line application for retrieving either a summary or the raw data
+* Updated command-line job control functions so that the Job URI is echoed to command-line.
+* Updated RDFManager so that it will now automatically upload all .rdf, .ttl and .nt files in directory. An array of extension can be provided to 
+  configure this behaviour
+* Updated command-line tool so that it will now handle uploads of turtle (.ttl) and ntriples (.nt) files correctly
+* Updated Store class to allow mimetype of files and data to be specified when uploading to metabox. Useful now that the platform supports turtle
+
+== Version 0.6.1
+
+* Added examples/linkeddata/proxy.rb
+* Fixed bug in command-line application 
+* Added SparqlHelper.exists method
+
+== Version 0.6
+
+* Refactored talis_store command extracting code into Pho::CommandLine
+* Tweaked talis_store command, so attempt to store .nt file will trigger conversion into RDF/XML before submitting to Platform
+* Added Pho::RDF module for general rdf utilities. Initially has method to convert ntriples into rdf/xml and to store that in the platform
+* At suggestion of @chrislowis added rescue around redland dependent requires.
+* talis_store command-line now supports "upload" option for storing individual files or directories
+* Added support for directory traversal to RDFManager and FileManager classes
+* Fixed bug in counting files being managed in RDFManager
+* Fixed file naming bug in AbstractFileManager, when path contains file extension
+* Added support for block to StoreEnricher.merge and StoreEnricher.infer
+* Renamed ResourceEnricher to StoreEnricher
+* Reimplemented ResourceEnricher.enrich method to support both a callback and a block
+* Added StoreSparqlClient to extend default client, and rewrite describe_uri queries as describe service calls 
+* Added SparqlClient.describe_uri and SparqlHelper.describe_uri methods for generating different forms 
+  of Bounded Description for a resource
+
+== Version 0.5
+
+NOTE: Released 0.4.1 version of the gem at this point to support earlier versions of 
+Ruby.
+
+* Added Enrichment module to support updating a store with results of simple inference (using 
+  CONSTRUCT queries), merging data from external endpoints, and support for parameterized 
+  lookup and enrichment of resources
+* Added SparqlClient.multi_describe
+* Added additional methods in SparqlHelper to support applying initial bindings to queries, and
+  generating initial bindings from SELECT results
+* Added Pho::FileManagement::FileManager for pushing a directory of files into the content box
+* RDFCollection is now deprecated
+* Added Pho::FileManagement module and extracted code from RDFCollection to support creating similar util for other files
+* Added SparqlHelper class to simplify a few common tasks
+* Added new Sparql module and refactored store methods to use SparqlClient class
+* Fixed bug in store.augment() method which was setting wrong headers on POST
+* Added Converter class to convert between various RDF serializations and resource hashes. This uses the Redland API.  
+* Support Ruby 1.8.5 or above (to allow installation on Centos 5)
+* Support for storing data in private graphs as well as metabox
+* Support for submission of changesets to private graphs as well as metabox
+* Multisparql options on all Store sparql methods
+* Addition of ChangeSetBuilder class for constructing changesets from triple hashes
+* Addition of ResourceHash module and SetAlgebra class for working with triple hashes
+* Addition of Changeset, Statement classes for capturing and serializing Changeset data
+* Fixed bugs in facet, search params
+* Added submit_changeset method to Store to support submission of changeset data
+
+== Version 0.4
+
+* Added support for reading Job lifecycle data exposed in Talis Platform Release 21
+* Added constants for 2 new analysers added in Talis Platform Release 21
+* Refactored job submission code to move methods from the Store class onto the Jobs and Job classes instead.
+  This brings that code in line with the patterns used elsewhere
+* Re-implemented snapshot reading code to use RDF/XML rather than scraping the HTML  
+* Added a fledgling command-line tool for working with the platform "talis_store"
+
+== Version 0.3
+
+* Added support for QueryProfiles, Facets
+* Added Pho::Namespaces module for collecting together ns declarations
+* Altered store.status to return basic response, and a new Status class to parse and encapsulate the response data
+
+== Version 0.2
+
+* Added support for parsing and maintenance of FieldPredicate Maps
+
+== Version 0.1
+
+* Implemented core contentbox, metabox and service functionality. First proper release
+
+== Version 0.0.1
+
+* Testing gem package building and release

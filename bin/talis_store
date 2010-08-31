@@ -1,0 +1,282 @@
+#!/usr/bin/env ruby
+require 'rubygems'
+require 'pho'
+require 'getoptlong'
+
+PROGRAM     = File::basename $0
+
+USAGE = <<-EOL
+SYNOPSIS
+
+  #{ PROGRAM } mode [args]*
+
+DESCRIPTION
+
+  Provides a simple command-line interface for working with a Talis Platform store. The script attempts to provide 
+  access to the most useful core functionality, making it easier to write scripts that interact with a store, 
+  as well as providing a simple set of developer tools. 
+    
+MODE
+
+  add_mapping
+    Add an entry to the field predicate map
+
+    example :
+   
+      #{ PROGRAM } add_mapping -u user -p pass -s my-dev1 --field name --predicate http://xmlns.com/foaf/0.1/name
+       
+  add_weight
+    Add a field weight to the query profile
+
+    example :
+
+      #{ PROGRAM } add_mapping -u user -p pass -s my-dev1 --field name --weight 2.0
+        
+  backup
+    Take a snapshot of a store and then download that new snapshot to the local system
+    By default the snapshot is downloaded into /tmp, but can be specified on the command-line
+     
+    example :
+       
+      #{ PROGRAM } backup -u user -p pass -s my-dev1
+      #{ PROGRAM } backup -u user -p pass -s my-dev1 -d ~/backups
+
+  describe
+    Fetch description of a resource.   
+  
+    example :
+  
+      #{ PROGRAM } describe -u user -p pass -s my-dev1 -r http://www.example.org/foo
+
+  getfpmap
+    Fetch and display FieldPredicate map from store   
+
+    example :
+
+      #{ PROGRAM } getfpmap -u user -p pass -s my-dev1
+      #{ PROGRAM } getfpmap -u user -p pass -s my-dev1 --raw
+
+  getqueryprofile
+    Fetch and display QueryProfile from store   
+
+    example :
+
+      #{ PROGRAM } getqueryprofile -u user -p pass -s my-dev1
+      #{ PROGRAM } getqueryprofile -u user -p pass -s my-dev1 --raw
+        
+  reindex
+    Trigger a reindex job on the store
+      
+    example :
+    
+      #{ PROGRAM } reindex -u user -p pass -s my-dev1
+  
+  remove_mapping
+    Remove a mapping from both the field predicate map and the query profile
+    
+    example :
+
+      #{ PROGRAM } remove_mapping -u user -p pass -s my-dev1 --field name
+    
+  reset
+    Reset the store. THIS WILL DELETE ALL DATA.
+      
+    example :
+    
+      #{ PROGRAM } reset -u user -p pass -s my-dev1
+  
+  restore
+    Restore the store from a snapshot. By default it will restore from the most recent snapshot
+    held in the Platform. Specify a url parameter to indicate a url from which a snapshot can be downloaded.
+      
+    example :
+    
+      #{ PROGRAM } restore -u user -p pass -s my-dev1                              
+      #{ PROGRAM } restore -u user -p pass -s my-dev1 -r http://www.example.org/backups/snapshot.tar      
+    
+  snapshot
+    Generate a snapshot of the store. (This doesnt download the snapshot, use backup for that).
+      
+    example :
+  
+      #{ PROGRAM } snapshot -u user -p pass -s my-dev1
+
+  sparql
+    Run a SPARQL query against the Platform.
+    
+    example :
+    
+      #{ PROGRAM } sparql -f ~/queries/query.rq
+    
+  status
+    Show read-write status of the store
+    
+  store
+    Upload some RDF data to the metabox in a Platform store. Can either specify a local file, or a URL
+    When a url is specified, then the data is retrieved and then submitted to the Platform
+    Can also be used to store an entire directory of RDF/XML, Turtle and ntriples using the --dir option.
+       
+    example :
+  
+      #{ PROGRAM } store -u user -p pass -s my-dev1 -f /tmp/data.rdf
+      #{ PROGRAM } store -u user -p pass -s my-dev1 -r http://www.example.net/data/somedata.rdf
+      #{ PROGRAM } store -u user -p pass -s my-dev1 -d ~/data
+
+  upload
+    Upload some files to the contentbox in a Platform store. Can either specify a local file, or 
+    an entire directory of files using the --dir option. Directories can be traversed using the 
+    --traverse option.
+       
+    example :
+  
+      #{ PROGRAM } upload -u user -p pass -s my-dev1 -f /tmp/file.txt
+      #{ PROGRAM } upload -u user -p pass -s my-dev1 -d ~/files
+      #{ PROGRAM } upload -u user -p pass -s my-dev1 --traverse -d ~/files
+      #{ PROGRAM } upload -u user -p pass -s my-dev1 --traverse -d ~/files --base assets
+               
+OPTIONS
+
+  --help            , -h
+    show this message
+  --username        , -u
+    specify username
+  --password        , -p
+    specify password
+  --store           , -s
+    specify store name. Can be just name, or full URL
+  --url             , -r
+    specify a url, e.g. for retrieving description or uploading
+  --file            , -f
+    specify a file name, e.g. data to upload
+  --dir
+    specify a directory, e.g. containing data to upload or location to place data.
+  --traverse
+    recursively store files or RDF
+  --base
+    base path for uploading files to content box
+  --raw
+    output raw API response, e.g. for fpmap and queryprofile
+  --field
+    name of a field for fpmap or query profile
+  --predicate
+    predicate uri
+  --weight
+    weighting for a field in query profile
+  --analyzer
+    name or uri of analyzer                
+EOL
+
+mode = ARGV.shift
+
+opts = GetoptLong::new(
+         [ "--help"            , "-h" , GetoptLong::NO_ARGUMENT ],
+         [ "--username"        , "-u" , GetoptLong::REQUIRED_ARGUMENT ],
+         [ "--password"        , "-p" , GetoptLong::REQUIRED_ARGUMENT ],
+         [ "--store"           , "-s" , GetoptLong::REQUIRED_ARGUMENT ],
+         [ "--url"             , "-r" , GetoptLong::REQUIRED_ARGUMENT ],
+         [ "--file"            , "-f" , GetoptLong::REQUIRED_ARGUMENT ],
+         [ "--dir"             , "-d" , GetoptLong::REQUIRED_ARGUMENT ],
+         [ "--traverse"        , "-t" , GetoptLong::NO_ARGUMENT ],
+         [ "--base"            , "-b" , GetoptLong::REQUIRED_ARGUMENT ],
+         [ "--raw"             , GetoptLong::NO_ARGUMENT ],
+         [ "--field"           , GetoptLong::REQUIRED_ARGUMENT ],                             
+         [ "--predicate"       , GetoptLong::REQUIRED_ARGUMENT ],
+         [ "--weight"          , GetoptLong::REQUIRED_ARGUMENT ],
+         [ "--analyzer"        , GetoptLong::REQUIRED_ARGUMENT ]
+       ).enum_for.inject({}) { |h, (k, v)| h.update k.delete('-') => v }
+
+mode = "help" if opts["--help"]
+
+if mode == "help"
+  USAGE.display  
+else
+
+  
+#  if !opts["username"]
+#    puts "no <username>"
+#    abort USAGE
+#  end
+#  if !opts["password"]
+#    puts "no <password>"
+#    abort USAGE
+#  end  
+#  if !opts["store"]
+#    puts "no <store>"
+#    abort USAGE
+#  end  
+#  
+#  storename = opts["store"]
+#  if !storename.start_with?("http")
+#      storename = "http://api.talis.com/stores/#{storename}"  
+#  end
+#  
+#  store = Pho::Store.new(storename, opts["username"], opts["password"])
+  
+  cmds = nil
+  begin
+    cmds = Pho::CommandLine.new(opts, ENV)
+  rescue RuntimeError => e
+    puts e
+    abort USAGE
+  end
+    
+  #begin
+    
+  #TODO
+  #remove_mapping
+    case mode      
+      when "add_mapping"
+        if opts["predicate"] == nil || opts["field"] == nil
+          abort USAGE
+        end
+        cmds.add_mapping()
+      when "add_weight"  
+        if opts["weight"] == nil || opts["field"] == nil
+          abort USAGE
+        end 
+        cmds.add_weight()
+      when "status"
+         cmds.status()
+      when "backup"
+         cmds.backup()         
+      when "snapshot"
+         cmds.snapshot()                   
+      when "reindex"
+         cmds.reindex()
+      when "reset"
+         cmds.reset()
+      when "restore"
+         cmds.restore()
+      when "store"
+        if opts["file"] == nil && opts["dir"] == nil && opts["url"] == nil
+          abort USAGE
+        end
+        cmds.store()         
+      when "upload"
+        if opts["file"] == nil && opts["dir"] == nil && opts["url"] == nil
+          abort USAGE
+        end
+        cmds.upload()                
+      when "describe"
+        if opts["url"] == nil
+          abort USAGE
+        end 
+        cmds.describe()
+      when "sparql"
+        if opts["file"] == nil
+          abort USAGE
+        end 
+        cmds.sparql()  
+      when "getfpmap"
+        cmds.fpmap()                           
+      else
+         abort USAGE
+    end  
+   
+  #rescue StandardError => e
+  #   puts "Failed!"
+  #   puts e
+  #end
+      
+end  
+ 
