@@ -2,6 +2,7 @@ Brief notes on significant changes and additions in each release
 
 == Version 0.7.5
 
+* Added Pho::OAI::Statistics class to get basic metrics from the OAI service
 * Changes FieldPredicateMap.create_mapping implementation to build fpmap entry URIs
   using the MD5 of the property URI. This removes clashes for when properties such as 
   dc:title and dcterms:title are both added to store config
