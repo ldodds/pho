@@ -150,6 +150,10 @@ module Pho
         return DatatypeProperty.new(mapping_uri, property_uri, name, analyzer)        
     end        
     
+    #Create a DatatypeProperty instance, automatically assigning a unique identifier to it, and 
+    #validating the supplied data to ensure it matches the platform rules.
+    #
+    #Then automatically appends it to the provided fpmap instance
     def FieldPredicateMap.add_mapping(fpmap, store, property_uri, name, analyzer=nil)
       mapping = create_mapping(store, property_uri, name, analyzer)
       fpmap << mapping
