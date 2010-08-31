@@ -253,31 +253,62 @@ EOL
   end
   
   def test_create_mapping_with_slash_uri
+    digest = Digest::MD5.hexdigest("http://www.example.org/ns/title")
     mc = mock()
     mc.stub_everything
-    mc.expects(:build_uri).with("/config/fpmaps/1#title").returns("http://api.talis.com/stores/testing/config/fpmaps/1#title")
+    mc.expects(:build_uri).with("/config/fpmaps/1##{digest}").returns("http://api.talis.com/stores/testing/config/fpmaps/1##{digest}")
     
     mapping = Pho::FieldPredicateMap.create_mapping(mc, "http://www.example.org/ns/title", "title")
     assert_not_nil(mapping)
-    assert_equal("http://api.talis.com/stores/testing/config/fpmaps/1#title", mapping.uri)
+    assert_equal("http://api.talis.com/stores/testing/config/fpmaps/1##{digest}", mapping.uri)
     assert_equal("http://www.example.org/ns/title", mapping.property_uri)
     assert_equal("title", mapping.name)
     assert_equal(nil, mapping.analyzer)    
   end
 
   def test_create_mapping_with_hash_uri
+    digest = Digest::MD5.hexdigest("http://www.example.org/ns/things#document")
     mc = mock()
     mc.stub_everything
-    mc.expects(:build_uri).with("/config/fpmaps/1#document").returns("http://api.talis.com/stores/testing/config/fpmaps/1#document")
+    mc.expects(:build_uri).with("/config/fpmaps/1##{digest}").returns("http://api.talis.com/stores/testing/config/fpmaps/1##{digest}")
     
     mapping = Pho::FieldPredicateMap.create_mapping(mc, "http://www.example.org/ns/things#document", "document", Pho::Analyzers::DUTCH)
     assert_not_nil(mapping)
-    assert_equal("http://api.talis.com/stores/testing/config/fpmaps/1#document", mapping.uri)
+    assert_equal("http://api.talis.com/stores/testing/config/fpmaps/1##{digest}", mapping.uri)
     assert_equal("http://www.example.org/ns/things#document", mapping.property_uri)
     assert_equal("document", mapping.name)
     assert_equal(Pho::Analyzers::DUTCH, mapping.analyzer)    
   end
-  
+
+  def test_add_mapping
+    digest = Digest::MD5.hexdigest("http://www.example.org/ns/things#document")
+    mc = mock()
+    mc.stub_everything
+    mc.expects(:build_uri).with("/config/fpmaps/1##{digest}").returns("http://api.talis.com/stores/testing/config/fpmaps/1##{digest}")
+    
+    fpmap = Pho::FieldPredicateMap.new("http://api.talis.com/stores/testing/fpmaps/1#mapping", "Test Mapping")
+    
+    mapping = Pho::FieldPredicateMap.add_mapping(fpmap, mc, "http://www.example.org/ns/things#document", "document", Pho::Analyzers::DUTCH)
+    assert_not_nil(mapping)
+    assert_equal("http://api.talis.com/stores/testing/config/fpmaps/1##{digest}", mapping.uri)
+    assert_equal("http://www.example.org/ns/things#document", mapping.property_uri)
+    assert_equal("document", mapping.name)
+    assert_equal(Pho::Analyzers::DUTCH, mapping.analyzer)        
+  end
+
+  def test_add_mapping_with_similar_uri_suffix
+    mc = mock()
+    mc.stub_everything
+    mc.expects(:build_uri).with("/config/fpmaps/1##{Digest::MD5.hexdigest("http://www.example.org/ns/things#document")}").returns(
+      "http://api.talis.com/stores/testing/config/fpmaps/1##{Digest::MD5.hexdigest("http://www.example.org/ns/things#document")}")
+        
+    fpmap = Pho::FieldPredicateMap.new("http://api.talis.com/stores/testing/fpmaps/1#mapping", "Test Mapping")
+    
+    mapping = Pho::FieldPredicateMap.add_mapping(fpmap, mc, "http://www.example.org/ns/things#document", "document", Pho::Analyzers::DUTCH)
+    assert_equal("http://api.talis.com/stores/testing/config/fpmaps/1##{Digest::MD5.hexdigest("http://www.example.org/ns/things#document")}", mapping.uri)
+      
+  end
+     
   def test_create_mapping_with_invalid_name
     assert_raise RuntimeError do
       Pho::FieldPredicateMap.create_mapping(nil, "http://www.example.org/ns/things#document", "12345")

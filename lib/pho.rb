@@ -4,6 +4,7 @@ require 'json'
 require 'yaml'
 require 'date'
 require 'rexml/document'
+require 'md5'
 
 require 'pho/etags'
 require 'pho/store'

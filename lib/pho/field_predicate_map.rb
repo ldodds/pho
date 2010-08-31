@@ -134,7 +134,7 @@ module Pho
         return fpmap        
     end    
 
-    #Create a DatatypeProperty instance, automatically assigning a unique identifier to it, and adding
+    #Create a DatatypeProperty instance, automatically assigning a unique identifier to it, and 
     #validating the supplied data to ensure it matches the platform rules
     def FieldPredicateMap.create_mapping(store, property_uri, name, analyzer=nil)
         check_value("property_uri", property_uri)
@@ -150,6 +150,12 @@ module Pho
         return DatatypeProperty.new(mapping_uri, property_uri, name, analyzer)        
     end        
     
+    def FieldPredicateMap.add_mapping(fpmap, store, property_uri, name, analyzer=nil)
+      mapping = create_mapping(store, property_uri, name, analyzer)
+      fpmap << mapping
+      return mapping
+    end
+      
     def initialize(uri, label, datatype_properties = [])
       @uri = uri
       @label = label
@@ -162,7 +168,7 @@ module Pho
     def <<(obj)
       @datatype_properties << obj
     end
-
+      
     #Lookup the name mapped to the specified uri
     #
     #uri:: the property uri to search for 
@@ -265,11 +271,12 @@ module Pho
     
     private
       def FieldPredicateMap.get_suffix(uri)
-        candidate_suffix = uri.split("/").last
-        if candidate_suffix.index("#") != -1
-          return candidate_suffix.split("#").last
-        end
-        return candidate_suffix
+        return Digest::MD5.hexdigest(uri)
+#        candidate_suffix = uri.split("/").last
+#        if candidate_suffix.index("#") != -1
+#          return candidate_suffix.split("#").last
+#        end
+#        return candidate_suffix
       end
       
       def FieldPredicateMap.check_value(name, val)

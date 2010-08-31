@@ -198,7 +198,7 @@ EOL
       mc = mock()
       mc.expects(:build_uri).with("/config/fpmaps/1").returns( "http://api.talis.com/stores/testing/config/fpmaps/1" )
       mc.expects(:get_field_predicate_map).returns( HTTP::Message.new_response(TEST_FPMAP) )
-      mc.expects(:build_uri).with("/config/fpmaps/1#test").returns( "http://api.talis.com/stores/testing/config/fpmaps/1#test" )
+      mc.expects(:build_uri).with("/config/fpmaps/1##{Digest::MD5.hexdigest("http://www.example.org/test")}").returns( "http://api.talis.com/stores/testing/config/fpmaps/1##{Digest::MD5.hexdigest("http://www.example.org/test")}" )
       mc.expects(:put_field_predicate_map).returns( HTTP::Message.new_response("") )
       
       @opts["field"] = "test"
