@@ -135,4 +135,41 @@ EOL
     assert_equal(0, results.cursor)
     assert_equal("b2FpX2RjfDEwMHwxOTcwLTAxLTAxVDAwOjAwOjAwWnwyMDEwLTA0LTA0VDEzOjU0OjMyWg==", results.resumption_token)
   end  
+  
+  def test_statistics_last_updated
+    mc = mock()
+    mc.expects(:set_auth)
+    mc.expects(:get).with("http://api.talis.com/stores/testing/services/oai-pmh", {"verb" => "ListRecords", "metadataPrefix" => "oai_dc"} ).returns(
+      HTTP::Message.new_response(LIST_RECORDS))
+    
+    store = Pho::Store.new("http://api.talis.com/stores/testing", "user", "pass", mc)
+
+    updated = Pho::OAI::Statistics.last_updated(store)    
+    assert_equal(DateTime.parse("2010-03-19T12:57:06Z"), updated)    
+  end
+
+  def test_statistics_num_entities
+    mc = mock()
+    mc.expects(:set_auth)
+    mc.expects(:get).with("http://api.talis.com/stores/testing/services/oai-pmh", {"verb" => "ListRecords", "metadataPrefix" => "oai_dc"} ).returns(
+      HTTP::Message.new_response(LIST_RECORDS))
+    
+    store = Pho::Store.new("http://api.talis.com/stores/testing", "user", "pass", mc)
+  
+    size = Pho::OAI::Statistics.num_of_entities(store)    
+    assert_equal(2, size)    
+  end    
+
+  def test_statistics_num_entities_with_resumption
+    mc = mock()
+    mc.expects(:set_auth)
+    mc.expects(:get).with("http://api.talis.com/stores/testing/services/oai-pmh", {"verb" => "ListRecords", "metadataPrefix" => "oai_dc"} ).returns(
+      HTTP::Message.new_response(LIST_RECORDS_WITH_TOKEN))
+    
+    store = Pho::Store.new("http://api.talis.com/stores/testing", "user", "pass", mc)
+  
+    size = Pho::OAI::Statistics.num_of_entities(store)    
+    assert_equal(6151294, size)    
+  end  
+
 end

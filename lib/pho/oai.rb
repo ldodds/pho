@@ -3,6 +3,31 @@ module Pho
   #OAI-PMH Support
   module OAI
   
+    #Access basic store statistics via the OAI interface    
+    class Statistics
+      
+      #Datestamp of last updated record in the store
+      #
+      #This reads the OAI-PMH interface and retrieves the datestamp of the most
+      #recently updated item
+      def Statistics.last_updated(store)
+        records = Records.read_from_store(store)
+        return records.records[0].datestamp
+      end
+      
+      #Number of entities in the store. This includes all resources in both the 
+      #metabox AND the contentbox
+      def Statistics.num_of_entities(store)
+        records = Records.read_from_store(store)
+        if records.resumption_token != nil
+          return records.list_size
+        else 
+          return records.records.length
+        end
+      end
+      
+    end
+    
     class Record
       
         attr_reader :identifier
