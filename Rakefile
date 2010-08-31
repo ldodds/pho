@@ -5,7 +5,7 @@ require 'rake/testtask'
 require 'rake/clean'
 
 NAME = "pho"
-VER = "0.7.4"
+VER = "0.7.5"
 
 RDOC_OPTS = ['--quiet', '--title', 'Pho (Talis Platform Client) Reference', '--main', 'README']
 
