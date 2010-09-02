@@ -60,7 +60,12 @@ module Pho
       
       json = JSON.parse( resp.content )
 
-      label = json[qp_uri]["http:\/\/www.w3.org\/2000\/01\/rdf-schema#label"][0]["value"]
+      labels = json[qp_uri]["http:\/\/www.w3.org\/2000\/01\/rdf-schema#label"]
+      if labels != nil && labels.length > 0
+        label = labels[0]["value"]
+      else
+        label = "query profile"
+      end
       qp = QueryProfile.new(qp_uri, label)
       
       field_weights = json[qp_uri]["http:\/\/schemas.talis.com\/2006\/bigfoot\/configuration#fieldWeight"]

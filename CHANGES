@@ -1,5 +1,10 @@
 Brief notes on significant changes and additions in each release
 
+== Version 0.7.6
+
+* Fixed bug in QueryProfile.read_from_store which was expecting an rdfs:label 
+  to always be present
+
 == Version 0.7.5
 
 * Added Pho::OAI::Statistics class to get basic metrics from the OAI service

@@ -26,6 +26,26 @@ class QueryProfileTest < Test::Unit::TestCase
     }
   }  
 EOL
+
+  QP_JSON_NO_LABEL = <<-EOL
+  {
+    "http:\/\/api.talis.com\/stores\/testing\/config\/queryprofiles\/1" : {
+      "http:\/\/www.w3.org\/1999\/02\/22-rdf-syntax-ns#type" : [ { "value" : "http:\/\/schemas.talis.com\/2006\/bigfoot\/configuration#QueryProfile", "type" : "uri" } ],
+      "http:\/\/schemas.talis.com\/2006\/bigfoot\/configuration#fieldWeight" : [ 
+        { "value" : "http:\/\/api.talis.com\/stores\/testing\/config\/queryprofiles\/1#name", "type" : "uri" },
+        { "value" : "http:\/\/api.talis.com\/stores\/testing\/config\/queryprofiles\/1#nick", "type" : "uri" }
+      ]
+    },
+    "http:\/\/api.talis.com\/stores\/testing\/config\/queryprofiles\/1#nick" : {
+      "http:\/\/schemas.talis.com\/2006\/bigfoot\/configuration#weight" : [ { "value" : "1.0", "type" : "literal" } ],
+      "http:\/\/schemas.talis.com\/2006\/frame\/schema#name" : [ { "value" : "nick", "type" : "literal" } ]
+    },
+    "http:\/\/api.talis.com\/stores\/testing\/config\/queryprofiles\/1#name" : {
+      "http:\/\/schemas.talis.com\/2006\/bigfoot\/configuration#weight" : [ { "value" : "2.0", "type" : "literal" } ],
+      "http:\/\/schemas.talis.com\/2006\/frame\/schema#name" : [ { "value" : "name", "type" : "literal" } ]
+    }
+  }  
+EOL
   
   def setup
     @qp = Pho::QueryProfile.new("http://api.talis.com/stores/testing/config/queryprofiles/default", "test query profile")
@@ -134,7 +154,23 @@ EOL
     assert_expected_field_weighting(sorted[0], "name", "http://api.talis.com/stores/testing/config/queryprofiles/1#name", "2.0")
     assert_expected_field_weighting(sorted[1], "nick", "http://api.talis.com/stores/testing/config/queryprofiles/1#nick", "1.0")
   end  
-  
+
+  def test_read_from_store_no_label
+    mc = mock()
+    mc.expects(:set_auth)
+    mc.expects(:get).with("http://api.talis.com/stores/testing/config/queryprofiles/1", anything, 
+    {"Accept" => "application/json"}).returns( HTTP::Message.new_response(QP_JSON_NO_LABEL) )
+   
+    store = Pho::Store.new("http://api.talis.com/stores/testing", "user", "pass", mc)
+    qp = Pho::QueryProfile.read_from_store(store)
+    
+    assert_not_nil(qp)
+    
+    assert_equal("http://api.talis.com/stores/testing/config/queryprofiles/1", qp.uri)
+    assert_equal("query profile", qp.label)
+    
+  end  
+    
   def test_get_by_name
         
     assert_expected_field_weighting(@qp.get_by_name("abstract"), "abstract", "http://api.talis.com/stores/testing/config/queryprofiles/default#abstract", 5.0)     
