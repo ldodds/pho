@@ -5,12 +5,6 @@ module Pho
   #Dependent on the redland ruby bindings
   module RDF
     
-    begin
-      require 'rdf/redland'
-    rescue LoadError
-      $stderr.puts "WARNING: Unable to load redland-ruby bindings. Some RDF utils will be unavailable"
-    end
-    
     #General RDF parsing utilities.
     #
     #Currently a convenience wrapper around the Redland Ruby bindings 
