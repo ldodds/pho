@@ -67,7 +67,8 @@ module Pho
         end
         records = []        
         responseDate = doc.root.get_elements("responseDate")[0].text
-        from = DateTime.parse( doc.root.get_elements("request")[0].attributes["from"] )
+        from = doc.root.get_elements("request")[0].attributes["from"]
+        from = DateTime.parse( from ) unless from == nil          
         to = doc.root.get_elements("request")[0].attributes["until"]
         to = DateTime.parse( to ) unless to == nil 
         REXML::XPath.each( doc.root,  "//oai:header", {"oai" => "http://www.openarchives.org/OAI/2.0/"} ) do |header|
@@ -100,14 +101,14 @@ module Pho
       # records = store.list_records
       # while records != nil
       #   #do something with retrieved records
-      #   records = Records.read_next_records(store, records.resumption_token 
+      #   records = Records.read_next_records(store, records.resumption_token)
       # end
       #
       #store:: the store
-      #records:: previously retrieved resumption_token
+      #resumption_token:: previously retrieved resumption_token
       def Records.read_next_records(store, resumption_token)
         #list is already complete
-        if records.resumption_token = nil
+        if resumption_token == nil
           return nil
         end
         return Records.read_from_store(store, nil, nil, token)

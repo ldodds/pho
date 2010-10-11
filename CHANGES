@@ -2,6 +2,9 @@ Brief notes on significant changes and additions in each release
 
 == Version 0.7.7
 
+* Included bug fixes from @kiyanwang into OAI support. Now properly handles resumption 
+  tokens.
+  
 * Added dependency on RDF.rb, rdf/json, rdf/raptor. Changed Pho::Converter to use this 
   code.
   

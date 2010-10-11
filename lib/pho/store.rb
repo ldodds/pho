@@ -446,22 +446,27 @@ module Pho
     # OAI
     #############
     
-    def list_records(from=nil, to=nil, resumption_token=nil)      
+    def list_records(from=nil, to=nil, resumption_token=nil)
       u = build_uri("/services/oai-pmh")
-      params = {"verb" => "ListRecords", "metadataPrefix" => "oai_dc"}
-      if from != nil
-        params["from"] = from.strftime("%Y-%m-%dT%H:%M:%SZ") if from.respond_to? :strftime
-        params["from"] = from.to_s if !from.respond_to? :strftime
+    
+      params = {"verb" => "ListRecords"}
+      if resumption_token==nil then
+        params["metadataPrefix"] = "oai_dc"
+        if from != nil
+          params["from"] = from.strftime("%Y-%m-%dT%H:%M:%SZ") if from.respond_to? :strftime
+          params["from"] = from.to_s if !from.respond_to? :strftime
+        end
+        if to != nil
+          params["until"] = to.strftime("%Y-%m-%dT%H:%M:%SZ") if to.respond_to? :strftime
+          params["until"] = to.to_s if !to.respond_to? :strftime
+        end
+      else
+        params["resumptionToken"] = resumption_token if resumption_token != nil
       end
-      if to != nil
-        params["until"] = to.strftime("%Y-%m-%dT%H:%M:%SZ") if to.respond_to? :strftime
-        params["until"] = to.to_s if !to.respond_to? :strftime
-      end
-      params["resumptionToken"] = resumption_token if resumption_token != nil
       response = @client.get(u, params)
       return response
     end
-        
+         
     #############
     # CONFIG
     #############

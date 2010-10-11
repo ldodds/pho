@@ -105,7 +105,7 @@ EOL
   def test_request_with_token
     mc = mock()
     mc.expects(:set_auth)
-    mc.expects(:get).with("http://api.talis.com/stores/testing/services/oai-pmh", {"verb" => "ListRecords", "metadataPrefix" => "oai_dc", "resumptionToken" => "abc"} ).returns(
+    mc.expects(:get).with("http://api.talis.com/stores/testing/services/oai-pmh", {"verb" => "ListRecords", "resumptionToken" => "abc"} ).returns(
       HTTP::Message.new_response(LIST_RECORDS))
     
     store = Pho::Store.new("http://api.talis.com/stores/testing", "user", "pass", mc)
