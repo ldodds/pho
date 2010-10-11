@@ -21,8 +21,7 @@ http://pho.rubyforge.net
 
 == Installation
 
-From the 0.5 release onwards, Pho is dependent on the Ruby bindings for the Redland RDF library.
-Ensure you have the librdf0 and librdf-ruby packages installed.
+From the 0.7.7 release onwards, Pho is dependent on the RDF.rb library and plugins for RDF parsing. 
 
 All other dependencies are for specific Ruby gems which should get automatically installed, 
 along with the Pho gem itself, by running:
