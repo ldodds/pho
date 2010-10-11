@@ -252,8 +252,8 @@ class ChangesetBuilderTest < Test::Unit::TestCase
   end
   
   def test_batch_changeset_with_list
-    coll_hash = Pho::ResourceHash::Converter.parse_rdfxml(COLLECTION, "http://www.example.com")
-    short_coll_hash = Pho::ResourceHash::Converter.parse_rdfxml(SHORT_COLLECTION, "http://www.example.com")
+    coll_hash = Pho::ResourceHash::Converter.parse_rdfxml(COLLECTION)
+    short_coll_hash = Pho::ResourceHash::Converter.parse_rdfxml(SHORT_COLLECTION)
     changesets = Pho::Update::ChangesetBuilder.build_batch(coll_hash, short_coll_hash, "Bob Bobson", "Because I can" )
     #2 because we've updated the head and tail of the list
     assert_equal(2, changesets.length)

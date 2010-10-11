@@ -2,11 +2,12 @@ Brief notes on significant changes and additions in each release
 
 == Version 0.7.7
 
-* Changed signature of Parser.store_ntriples and Parser.store_ntriples_from_string methods. 
-  Now just passes straight to Platform.
+* Added dependency on RDF.rb, rdf/json, rdf/raptor. Changed Pho::Converter to use this 
+  code.
   
-* Removed methods: Parser.parse_ntriples, Parser.parse_ntriples_from_string
-
+* Removed Pho::RDF.Parser -- just use RDF.rb and its plugins. Submission of ntriples 
+  to platform store can now be done directly on store object.
+  
 * Working to remove dependency on Redland Ruby bindings, also remove unnecessary parsing/converting 
   code as Ruby RDF libraries have improved and Platform now supports wider range of RDF serialisations
   

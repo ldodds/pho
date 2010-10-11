@@ -43,7 +43,7 @@ class ConverterTest < Test::Unit::TestCase
   
   def test_parse_rdfxml
 
-    hash = Pho::ResourceHash::Converter.parse_rdfxml(SINGLE_RESOURCE_RDFXML, "http://www.example.org")
+    hash = Pho::ResourceHash::Converter.parse_rdfxml(SINGLE_RESOURCE_RDFXML)
     assert_not_nil(hash)
     assert_not_nil(hash["http://www.example.org"])
     
@@ -56,7 +56,7 @@ class ConverterTest < Test::Unit::TestCase
   
   def test_parse_ntriples
     
-    hash = Pho::ResourceHash::Converter.parse_ntriples(SINGLE_RESOURCE_NTRIPLES, "http://www.example.org")
+    hash = Pho::ResourceHash::Converter.parse_ntriples(SINGLE_RESOURCE_NTRIPLES)
     assert_not_nil(hash)
     assert_not_nil(hash["http://www.example.org"])
     
@@ -70,7 +70,7 @@ class ConverterTest < Test::Unit::TestCase
 
   def test_parse_turtle
     
-    hash = Pho::ResourceHash::Converter.parse_ntriples(SINGLE_RESOURCE_TURTLE, "http://www.example.org")
+    hash = Pho::ResourceHash::Converter.parse_ntriples(SINGLE_RESOURCE_TURTLE)
     assert_not_nil(hash)
     assert_not_nil(hash["http://www.example.org"])
     

@@ -6,6 +6,12 @@ require 'date'
 require 'rexml/document'
 require 'md5'
 
+#RDF.rb
+require 'rdf'
+require 'rdf/json'
+#this requires raptor parser
+require 'rdf/raptor'
+
 require 'pho/etags'
 require 'pho/store'
 require 'pho/snapshot'
@@ -23,10 +29,8 @@ require 'pho/changeset'
 require 'pho/sparql'
 require 'pho/enrichment'
 require 'pho/command_line'
-#Following depend on redland
-require 'pho/converter'
-require 'pho/rdf'
 require 'pho/oai'
+require 'pho/converter'
 
 if RUBY_VERSION < "1.8.7"
   class String
