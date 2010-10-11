@@ -193,7 +193,7 @@ module Pho
         u = self.build_uri("/services/sparql")    
       end
       
-      sparql_client = StoreSparqlClient.new(@self, u, @client)
+      sparql_client = StoreSparqlClient.new(self, u, @client)
       sparql_client.supports_rdf_json = true
       sparql_client.supports_sparql_json = true
       
