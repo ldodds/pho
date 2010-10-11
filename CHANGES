@@ -1,5 +1,17 @@
 Brief notes on significant changes and additions in each release
 
+== Version 0.7.7
+
+* Changed signature of Parser.store_ntriples and Parser.store_ntriples_from_string methods. 
+  Now just passes straight to Platform.
+  
+* Removed methods: Parser.parse_ntriples, Parser.parse_ntriples_from_string
+
+* Working to remove dependency on Redland Ruby bindings, also remove unnecessary parsing/converting 
+  code as Ruby RDF libraries have improved and Platform now supports wider range of RDF serialisations
+  
+* Fixed bug in store.sparql_client, reference to @self rather than self
+
 == Version 0.7.6
 
 * Fixed bug in QueryProfile.read_from_store which was expecting an rdfs:label 
