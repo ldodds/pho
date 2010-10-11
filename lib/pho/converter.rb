@@ -1,8 +1,6 @@
 module Pho
   
   #Resource Hashes
-  #
-  #Dependent on the redland ruby bindings  
   module ResourceHash
         
     #Class for converting to and from resource hashes 
