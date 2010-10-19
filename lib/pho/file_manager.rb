@@ -8,8 +8,8 @@ module Pho
    
       attr_reader :base
       
-      def initialize(store, dir, base = nil, ok_suffix=OK, fail_suffix=FAIL, sleep=1)
-        super(store, dir, ok_suffix, fail_suffix, sleep)
+      def initialize(store, dir, base = nil, ok_suffix=OK, fail_suffix=FAIL)
+        super(store, dir, ok_suffix, fail_suffix)
         @base = base
       end
 
@@ -40,6 +40,7 @@ module Pho
       def store_file(file, filename)
         uri = FileManager.name_for_file(@dir, file, @base)
         response = @store.upload_item(file, MIME::Types.type_for(filename)[0].to_s, uri )
+        create_tracking_dir(filename)            
         if (response.status < 300 )
           File.open(get_ok_file_for(filename), "w") do |file|
             file.print( "OK" )            
@@ -51,6 +52,10 @@ module Pho
         end      
       end  
          
+      def create_tracking_dir(filename)
+        path = filename.split("/")[0..-2].join("/")  
+        Dir.mkdir("#{path}/#{TRACKING_DIR}") unless File.exists?("#{path}/#{TRACKING_DIR}")
+      end
     end
     
   end

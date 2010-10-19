@@ -8,13 +8,13 @@ module Pho
       attr_reader :dir
       attr_reader :store
         
-      OK = "ok".freeze
-      FAIL = "fail".freeze
+      OK = "ok"
+      FAIL = "fail"
+      TRACKING_DIR = ".pho"
       
-      def initialize(store, dir, ok_suffix=OK, fail_suffix=FAIL, sleep=1)
+      def initialize(store, dir, ok_suffix=OK, fail_suffix=FAIL)
         @store = store
         @dir = dir
-        @sleep = sleep
         @ok_suffix = ok_suffix
         @fail_suffix = fail_suffix
       end
@@ -40,26 +40,31 @@ module Pho
       end
             
       #Reset the directory to clear out any previous statuses
+      #TODO should be possible to do this recursively
       def reset()
-        Dir.glob( File.join(@dir, "*.#{@fail_suffix}") ).each do |file|
+        Dir.glob( File.join(@dir, "/#{TRACKING_DIR}/*.#{@fail_suffix}") ).each do |file|
           File.delete(file)
         end
-        Dir.glob( File.join(@dir, "*.#{@ok_suffix}") ).each do |file|
+        Dir.glob( File.join(@dir, "/#{TRACKING_DIR}/*.#{@ok_suffix}") ).each do |file|
           File.delete(file)
         end         
       end
-           
+      
+      #returns true if there is a fail or ok file, false otherwise
+      def stored?(file)
+        ok_file = get_ok_file_for(file)
+        fail_file = get_fail_file_for(file)        
+        if ( File.exists?(ok_file) or File.exists?(fail_file) )
+          return true
+        end        
+        return false
+      end     
+      
       #List any new files in the directory
       def new_files(recursive=false)
         newfiles = Array.new
         list(recursive).each do |file|
-          
-          ok_file = get_ok_file_for(file)
-          fail_file = get_fail_file_for(file)
-          if !( File.exists?(ok_file) or File.exists?(fail_file) )
-            newfiles << file          
-          end
-            
+          newfiles << file if !stored?(file)            
         end
         return newfiles
       end
@@ -98,13 +103,17 @@ module Pho
       end
       
       def get_fail_file_for(filename)
-        ext = File.extname(filename)
-        return filename.gsub(/#{ext}$/, ".#{@fail_suffix}")              
+        relative_path = filename.gsub(@dir, "")
+        base = File.basename(filename)
+        relative_path = relative_path.gsub(base, "#{TRACKING_DIR}/#{base}")
+        return "#{@dir}#{relative_path}.#{@fail_suffix}"              
       end
       
       def get_ok_file_for(filename)
-        ext = File.extname(filename)        
-        return filename.gsub(/#{ext}$/, ".#{@ok_suffix}")
+        relative_path = filename.gsub(@dir, "")
+        base = File.basename(filename)
+        relative_path = relative_path.gsub(base, "#{TRACKING_DIR}/#{base}")
+        return "#{@dir}#{relative_path}.#{@ok_suffix}"              
       end
                  
     end

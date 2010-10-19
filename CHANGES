@@ -1,5 +1,14 @@
 Brief notes on significant changes and additions in each release
 
+== Version 0.7.8
+
+* Fixed bug with directory uploads mangling file names
+
+* Fixed bug with tracking files with same root file name, e.g. foo.rdf and foo.css
+
+* Changed FileManager code so that all .ok and .fail fails are put into a shadow 
+  ".pho" directory, this avoids polluting directories with tracking files
+
 == Version 0.7.7
 
 * Included bug fixes from @kiyanwang into OAI support. Now properly handles resumption 

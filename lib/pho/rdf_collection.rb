@@ -14,12 +14,13 @@ module Pho
         
         ALL_RDF = [RDF, TTL, NT]
         
-        def initialize(store, dir, rdf_suffixes=ALL_RDF, ok_suffix=OK, fail_suffix=FAIL, sleep=1)
-          super(store, dir, ok_suffix, fail_suffix, sleep)
+        def initialize(store, dir, rdf_suffixes=ALL_RDF, ok_suffix=OK, fail_suffix=FAIL)
+          super(store, dir, ok_suffix, fail_suffix)
           @rdf_suffixes = rdf_suffixes
         end
                     
         #List files being managed
+        #FIXME support recursion
         def list(recursive=false)
             return Dir.glob( File.join(@dir, "*.\{#{ @rdf_suffixes.join(",") }\}") )  
         end

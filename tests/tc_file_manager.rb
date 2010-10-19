@@ -6,33 +6,40 @@ require 'mocha'
 class FileManagerTest < Test::Unit::TestCase
 
   def setup()
-    Dir.mkdir("/tmp/pho") unless File.exists?("/tmp/pho")
-    Dir.mkdir("/tmp/pho/a") unless File.exists?("/tmp/pho/a")
-    Dir.mkdir("/tmp/pho/b") unless File.exists?("/tmp/pho/b")
+    Dir.mkdir("/tmp/pho") unless File.exists?("/tmp/pho")    
+    Dir.mkdir("/tmp/pho/.pho") unless File.exists?("/tmp/pho/.pho")
+
+    Dir.mkdir("/tmp/pho/a") unless File.exists?("/tmp/pho/a")    
+    Dir.mkdir("/tmp/pho/b") unless File.exists?("/tmp/pho/b")        
+
+    #/tmp/pho/[0-6].css
     7.times do |i|
       file = File.new( File.join("/tmp/pho", "#{i}.css"), "w" )
       file.write("CSS#{i}")
       file.close()
     end
+    #/tmp/pho/[7-9].js
     3.times do |i|
       num = i + 7
       file = File.new( File.join("/tmp/pho", "#{num}.js"), "w" )
       file.write("JS#{num}")
       file.close()
     end
+    #/tmp/pho/.pho/[0-3].ok
     4.times do |i|
-      file = File.new( File.join("/tmp/pho", "#{i}.ok"), "w" )
+      file = File.new( File.join("/tmp/pho/.pho", "#{i}.css.ok"), "w" )
       file.write("OK")
       file.close()      
     end
+    #/tmp/pho/.pho/[4-6].fail
     3.times do |i|
       num = 4 + i
-      file = File.new( File.join("/tmp/pho", "#{num}.fail"), "w" )
+      file = File.new( File.join("/tmp/pho/.pho", "#{num}.css.fail"), "w" )
       file.write("FAIL")
       file.close()      
     end
 
-    #/tmp/pho/a
+    #/tmp/pho/a/[0-1].txt
     2.times do |i|
       num = i
       file = File.new( File.join("/tmp/pho/a", "#{num}.txt"), "w" )
@@ -40,7 +47,7 @@ class FileManagerTest < Test::Unit::TestCase
       file.close()
     end
 
-    #/tmp/pho/b
+    #/tmp/pho/b/0.txt
     1.times do |i|
       num = i
       file = File.new( File.join("/tmp/pho/b", "#{num}.txt"), "w" )
@@ -51,21 +58,58 @@ class FileManagerTest < Test::Unit::TestCase
   end
   
   def teardown()
-    Dir.glob("/tmp/pho/*.css") do |file|
+    Dir.glob("/tmp/pho/*.*") do |file|
       File.delete(file)
     end
-    Dir.glob("/tmp/pho/*.js") do |file|
-      File.delete(file)
-    end    
-    Dir.glob("/tmp/pho/**/*.ok") do |file|
+    Dir.glob("/tmp/pho/.pho/*.*") do |file|
       File.delete(file)
     end
-    Dir.glob("/tmp/pho/**/*.fail") do |file|
+    Dir.glob("/tmp/pho/a/.pho/*.*") do |file|
       File.delete(file)
     end
-    Dir.glob("/tmp/pho/**/*.txt") do |file|
+    Dir.glob("/tmp/pho/b/.pho/*.*") do |file|
       File.delete(file)
-    end                    
+    end
+    Dir.glob("/tmp/pho/a/*.*") do |file|
+      File.delete(file)
+    end
+    Dir.glob("/tmp/pho/b/*.*") do |file|
+      File.delete(file)
+    end
+    
+    delete("/tmp/pho/a/.pho")
+    delete("/tmp/pho/b/.pho")
+    delete("/tmp/pho/a")
+    delete("/tmp/pho/b")
+    delete("/tmp/pho/.pho")    
+    delete("/tmp/pho")                        
+  end
+      
+  def delete(dir)
+    Dir.delete(dir) if File.exists?(dir)
+  end
+  
+  def test_get_ok_file_for()
+    store = Pho::Store.new("http://api.talis.com/stores/testing", "user", "pass")    
+    collection = Pho::FileManagement::FileManager.new(store, "/tmp/pho")
+    assert_equal( "/tmp/pho/.pho/0.css.ok", collection.get_ok_file_for("/tmp/pho/0.css") )
+    assert_equal( "/tmp/pho/a/.pho/0.txt.ok", collection.get_ok_file_for("/tmp/pho/a/0.txt") )    
+  end
+
+  def test_get_fail_file_for()    
+    store = Pho::Store.new("http://api.talis.com/stores/testing", "user", "pass")    
+    collection = Pho::FileManagement::FileManager.new(store, "/tmp/pho")
+    assert_equal( "/tmp/pho/.pho/0.css.fail", collection.get_fail_file_for("/tmp/pho/0.css") )
+    assert_equal( "/tmp/pho/a/.pho/0.txt.fail", collection.get_fail_file_for("/tmp/pho/a/0.txt") )    
+  end
+  
+  def test_stored()
+    store = Pho::Store.new("http://api.talis.com/stores/testing", "user", "pass")    
+    collection = Pho::FileManagement::FileManager.new(store, "/tmp/pho")
+    7.times do |i|
+      assert_equal( true, collection.stored?("/tmp/pho/#{i}.css"), "#{i}.css should be stored" )
+    end
+        
   end
       
   def test_new_files()
@@ -110,9 +154,9 @@ class FileManagerTest < Test::Unit::TestCase
       collection = Pho::FileManagement::FileManager.new(store, "/tmp/pho")
       collection.store()
       
-      assert_equal(true, File.exists?("/tmp/pho/7.ok") )      
-      assert_equal(true, File.exists?("/tmp/pho/8.ok") )
-      assert_equal(true, File.exists?("/tmp/pho/9.ok") )
+      assert_equal(true, File.exists?("/tmp/pho/.pho/7.js.ok") )      
+      assert_equal(true, File.exists?("/tmp/pho/.pho/8.js.ok") )
+      assert_equal(true, File.exists?("/tmp/pho/.pho/9.js.ok") )
       
   end
 
@@ -128,9 +172,9 @@ class FileManagerTest < Test::Unit::TestCase
       collection = Pho::FileManagement::FileManager.new(store, "/tmp/pho", "assets")
       collection.store()
       
-      assert_equal(true, File.exists?("/tmp/pho/7.ok") )      
-      assert_equal(true, File.exists?("/tmp/pho/8.ok") )
-      assert_equal(true, File.exists?("/tmp/pho/9.ok") )
+      assert_equal(true, File.exists?("/tmp/pho/.pho/7.js.ok") )      
+      assert_equal(true, File.exists?("/tmp/pho/.pho/8.js.ok") )
+      assert_equal(true, File.exists?("/tmp/pho/.pho/9.js.ok") )
       
   end
 
@@ -150,12 +194,12 @@ class FileManagerTest < Test::Unit::TestCase
       collection = Pho::FileManagement::FileManager.new(store, "/tmp/pho")
       collection.store(:recursive)
       
-      assert_equal(true, File.exists?("/tmp/pho/7.ok") )      
-      assert_equal(true, File.exists?("/tmp/pho/8.ok") )
-      assert_equal(true, File.exists?("/tmp/pho/9.ok") )
-      assert_equal(true, File.exists?("/tmp/pho/a/0.ok") )
-      assert_equal(true, File.exists?("/tmp/pho/a/1.ok") )
-      assert_equal(true, File.exists?("/tmp/pho/b/0.ok") )
+      assert_equal(true, File.exists?("/tmp/pho/.pho/7.js.ok") )      
+      assert_equal(true, File.exists?("/tmp/pho/.pho/8.js.ok") )
+      assert_equal(true, File.exists?("/tmp/pho/.pho/9.js.ok") )
+      assert_equal(true, File.exists?("/tmp/pho/a/.pho/0.txt.ok") )
+      assert_equal(true, File.exists?("/tmp/pho/a/.pho/1.txt.ok") )
+      assert_equal(true, File.exists?("/tmp/pho/b/.pho/0.txt.ok") )
       
   end
   

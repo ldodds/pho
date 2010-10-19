@@ -177,6 +177,9 @@ module Pho
         puts "Uploading file: #{ @opts["file"] } to /items/#{ uri } as #{mime}"
         resp = @store.upload_item( f , mime , uri )
       elsif @opts["dir"]
+        if @opts["dir"] = "."
+          @opts["dir"] = File.expand_path(".")
+        end
         puts "Uploading contents of directory: #{@opts["dir"]}"
         collection = Pho::FileManagement::FileManager.new(@store, @opts["dir"], @opts["base"])
         if @opts["traverse"]
