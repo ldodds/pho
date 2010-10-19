@@ -20,9 +20,14 @@ module Pho
         end
                     
         #List files being managed
-        #FIXME support recursion
         def list(recursive=false)
-            return Dir.glob( File.join(@dir, "*.\{#{ @rdf_suffixes.join(",") }\}") )  
+            files = []
+            if recursive
+              pattern = "**/*.\{#{ @rdf_suffixes.join(",") }\}"
+            else
+              pattern = "*.\{#{ @rdf_suffixes.join(",") }\}"
+            end          
+            return Dir.glob( File.join(@dir, pattern) )  
         end
          
         protected

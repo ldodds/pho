@@ -203,6 +203,14 @@ class RDFCollectionTest < Test::Unit::TestCase
     assert_equal(10, files.size)    
   end
   
+  def test_list_recursive()
+    store = Pho::Store.new("http://api.talis.com/stores/testing", "user", "pass")
+    collection = Pho::FileManagement::RDFManager.new(store, "/tmp/rdf", ["rdf"])
+  
+    files = collection.list(:recurse)
+    assert_equal(10, files.size)
+  end
+
   def test_summary()
     store = Pho::Store.new("http://api.talis.com/stores/testing", "user", "pass")
     collection = Pho::FileManagement::RDFManager.new(store, "/tmp/rdf", ["rdf"])

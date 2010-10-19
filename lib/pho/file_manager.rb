@@ -17,16 +17,11 @@ module Pho
       def list(recursive=false)          
           files = []
           if recursive
-            pattern = "**/*"
+            pattern = "**/*.*"
           else
-            pattern = "*"
+            pattern = "*.*"
           end
-          Dir.glob( File.join(@dir, pattern) ) do |file|
-            if File.extname(file) != ".#{@ok_suffix}" && File.extname(file) != ".#{@fail_suffix}" && !File.directory?(file)
-              files << file
-            end
-          end  
-          return files
+          return Dir.glob( File.join(@dir, pattern) )
       end
            
       def FileManager.name_for_file(dir, file, base=nil)
