@@ -29,9 +29,8 @@ module Pho
       end
   
       #Retry anything known to have failed
-      #FIXME recursion
-      def retry_failures()
-        retries = failures()
+      def retry_failures(recursive=false)
+        retries = failures(recursive)
         retries.each do |filename|
           File.delete( get_fail_file_for(filename) )
           #store it

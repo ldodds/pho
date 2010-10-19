@@ -188,7 +188,7 @@ module Pho
         if @opts["retry"]
           puts "Retrying failures in: #{@opts["dir"]}"        
           if @opts["traverse"]
-            collection.retry_failures()          
+            collection.retry_failures(:traverse)          
             puts collection.summary(:traverse)
           else
             collection.retry_failures()          
