@@ -2,6 +2,11 @@ Brief notes on significant changes and additions in each release
 
 == Version 0.7.8
 
+* Added --retry parameter for file uploads to allow retrying of failed uploads
+
+* Added --force parameter for file uploads to reset tracking files, allowing complete 
+  resends
+  
 * Fixed bug with directory uploads mangling file names
 
 * Fixed bug with tracking files with same root file name, e.g. foo.rdf and foo.css

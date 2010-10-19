@@ -180,15 +180,30 @@ module Pho
         if @opts["dir"] = "."
           @opts["dir"] = File.expand_path(".")
         end
-        puts "Uploading contents of directory: #{@opts["dir"]}"
         collection = Pho::FileManagement::FileManager.new(@store, @opts["dir"], @opts["base"])
-        if @opts["traverse"]
-          collection.store(:traverse)          
-          puts collection.summary(:traverse)
+        if @opts["force"]
+          puts "Resetting tracking files for directory #{@opts["dir"]}"
+          collection.reset()
+        end
+        if @opts["retry"]
+          puts "Retrying failures in: #{@opts["dir"]}"        
+          if @opts["traverse"]
+            collection.retry_failures()          
+            puts collection.summary(:traverse)
+          else
+            collection.retry_failures()          
+            puts collection.summary()            
+          end                   
         else
-          collection.store()          
-          puts collection.summary()            
-        end         
+          puts "Uploading contents of directory: #{@opts["dir"]}"        
+          if @opts["traverse"]
+            collection.store(:traverse)          
+            puts collection.summary(:traverse)
+          else
+            collection.store()          
+            puts collection.summary()            
+          end                   
+        end        
       else     
         #noop
       end 

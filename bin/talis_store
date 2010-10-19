@@ -154,6 +154,10 @@ OPTIONS
     recursively store files or RDF
   --base
     base path for uploading files to content box
+  --force
+  	for directory uploads, force resending of files, removing previous tracking files    
+  --retry
+  	for directory uploads, triggers retry of previously failed requests only    
   --raw
     output raw API response, e.g. for fpmap and queryprofile
   --field
@@ -179,6 +183,8 @@ opts = GetoptLong::new(
          [ "--traverse"        , "-t" , GetoptLong::NO_ARGUMENT ],
          [ "--base"            , "-b" , GetoptLong::REQUIRED_ARGUMENT ],
          [ "--raw"             , GetoptLong::NO_ARGUMENT ],
+         [ "--force"           , GetoptLong::NO_ARGUMENT ],
+         [ "--retry"           , GetoptLong::NO_ARGUMENT ],
          [ "--field"           , GetoptLong::REQUIRED_ARGUMENT ],                             
          [ "--predicate"       , GetoptLong::REQUIRED_ARGUMENT ],
          [ "--weight"          , GetoptLong::REQUIRED_ARGUMENT ],
@@ -190,27 +196,6 @@ mode = "help" if opts["--help"]
 if mode == "help"
   USAGE.display  
 else
-
-  
-#  if !opts["username"]
-#    puts "no <username>"
-#    abort USAGE
-#  end
-#  if !opts["password"]
-#    puts "no <password>"
-#    abort USAGE
-#  end  
-#  if !opts["store"]
-#    puts "no <store>"
-#    abort USAGE
-#  end  
-#  
-#  storename = opts["store"]
-#  if !storename.start_with?("http")
-#      storename = "http://api.talis.com/stores/#{storename}"  
-#  end
-#  
-#  store = Pho::Store.new(storename, opts["username"], opts["password"])
   
   cmds = nil
   begin

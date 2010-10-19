@@ -29,6 +29,7 @@ module Pho
       end
   
       #Retry anything known to have failed
+      #FIXME recursion
       def retry_failures()
         retries = failures()
         retries.each do |filename|
