@@ -2,7 +2,6 @@ module Pho
   
   module FileManagement
 
-    #TODO: move files into hidden directory
     class AbstractFileManager
     
       attr_reader :dir
@@ -40,9 +39,13 @@ module Pho
       end
             
       #Reset the directory to clear out any previous statuses
-      #TODO should be possible to do this recursively
-      def reset()
-        Dir.glob( File.join(@dir, "/#{TRACKING_DIR}/*.#{@fail_suffix}") ).each do |file|
+      def reset(recursive=false)
+        if recursive
+          pattern = "**/#{TRACKING_DIR}/*"
+        else
+          pattern = "/#{TRACKING_DIR}/*"
+        end        
+        Dir.glob( File.join(@dir, "#{pattern}.#{@fail_suffix}") ).each do |file|
           File.delete(file)
         end
         Dir.glob( File.join(@dir, "/#{TRACKING_DIR}/*.#{@ok_suffix}") ).each do |file|
@@ -73,9 +76,7 @@ module Pho
       def failures(recursive=false)
         fails = Array.new
         list(recursive).each do |file|
-          if File.extname(file) != ".#{@fail_suffix}" && File.extname(file) != ".#{@ok_suffix}"
-            fails << file if File.exists?( get_fail_file_for(file) )  
-          end          
+          fails << file if File.exists?( get_fail_file_for(file) )
         end
         return fails
       end
@@ -84,9 +85,7 @@ module Pho
       def successes(recursive=false)
         successes = Array.new
         list(recursive).each do |file|
-          if File.extname(file) != ".#{@fail_suffix}" && File.extname(file) != ".#{@ok_suffix}"
-             successes << file if File.exists?( get_ok_file_for(file) )
-          end
+          successes << file if File.exists?( get_ok_file_for(file) )
         end
         return successes
       end

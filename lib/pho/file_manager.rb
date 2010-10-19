@@ -15,7 +15,6 @@ module Pho
 
       #List files being managed, i.e. everything not .ok or .fail
       def list(recursive=false)          
-          files = []
           if recursive
             pattern = "**/*.*"
           else

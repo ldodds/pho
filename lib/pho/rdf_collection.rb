@@ -21,7 +21,6 @@ module Pho
                     
         #List files being managed
         def list(recursive=false)
-            files = []
             if recursive
               pattern = "**/*.\{#{ @rdf_suffixes.join(",") }\}"
             else

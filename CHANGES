@@ -2,6 +2,11 @@ Brief notes on significant changes and additions in each release
 
 == Version 0.7.8
 
+* Recursive resets of collection directories
+
+* Fixed command-line code and RDF collection so that it supports all of the --retry, 
+  --force, and --traverse parameters
+  
 * Added --retry parameter for file uploads to allow retrying of failed uploads
 
 * Added --force parameter for file uploads to reset tracking files, allowing complete 

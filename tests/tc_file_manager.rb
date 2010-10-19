@@ -219,4 +219,33 @@ class FileManagerTest < Test::Unit::TestCase
     assert_equal(13, files.size)
   end
   
+  def test_reset()
+    store = Pho::Store.new("http://api.talis.com/stores/testing", "user", "pass")
+    collection = Pho::FileManagement::FileManager.new(store, "/tmp/pho")
+  
+    collection.reset()
+    newfiles = collection.new_files()
+    assert_equal(10, newfiles.size)        
+  end
+
+  def test_reset_recursive()
+    store = Pho::Store.new("http://api.talis.com/stores/testing", "user", "pass")
+    collection = Pho::FileManagement::FileManager.new(store, "/tmp/pho")
+  
+    Dir.mkdir("/tmp/pho/b/.pho") unless File.exists?("/tmp/pho/b/.pho")
+    file = File.new( File.join("/tmp/pho/b/.pho", "0.txt.fail"), "w" )
+    file.write("FAIL")
+    file.close()      
+    
+    files = collection.failures(:recurse)
+    assert_equal(4, files.size)        
+        
+    collection.reset(:recurse)
+    newfiles = collection.new_files(:recurse)
+    assert_equal(13, newfiles.size)        
+    
+    files = collection.failures(:recurse)
+    assert_equal(0, files.size)        
+    
+  end    
 end
