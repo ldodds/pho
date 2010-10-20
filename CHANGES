@@ -2,6 +2,8 @@ Brief notes on significant changes and additions in each release
 
 == Version 0.7.8
 
+* Added --updates to allow for store/upload of only changed files
+
 * Recursive resets of collection directories
 
 * Fixed command-line code and RDF collection so that it supports all of the --retry, 
