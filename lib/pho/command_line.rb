@@ -207,6 +207,10 @@ module Pho
         puts "Retrying failures in: #{@opts["dir"]}"     
         collection.retry_failures( @opts["traverse"] ? true : false )
         puts collection.summary( @opts["traverse"] ? true : false )   
+      elsif @opts["updates"]
+        puts "Uploading updates in: #{@opts["dir"]}"     
+        collection.store_updates( @opts["traverse"] ? true : false )
+        puts collection.summary( @opts["traverse"] ? true : false )           
       else
         puts "Uploading contents of directory: #{@opts["dir"]}"
         collection.store( @opts["traverse"] ? true : false )

@@ -37,7 +37,20 @@ module Pho
           store_file(file, filename)      
         end
       end
-            
+     
+      def store_changes(recursive=false)
+        changes = changed_files(recursive)
+        changes.each do |filename|
+          #cleanup tracking files
+          f = get_fail_file_for(filename)
+          File.delete( f ) if File.exists?(f)
+          f = get_ok_file_for(filename)
+          File.delete( f ) if File.exists?(f)
+          file = File.new(filename)
+          store_file(file, filename)
+        end
+      end
+             
       #Reset the directory to clear out any previous statuses
       def reset(recursive=false)
         if recursive

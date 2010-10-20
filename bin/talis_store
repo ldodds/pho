@@ -133,6 +133,9 @@ MODE
       #{ PROGRAM } upload -u user -p pass -s my-dev1 -d ~/files
       #{ PROGRAM } upload -u user -p pass -s my-dev1 --traverse -d ~/files
       #{ PROGRAM } upload -u user -p pass -s my-dev1 --traverse -d ~/files --base assets
+      #{ PROGRAM } upload -u user -p pass -s my-dev1 --force -d ~/files
+      #{ PROGRAM } upload -u user -p pass -s my-dev1 --updates -d ~/files
+      #{ PROGRAM } upload -u user -p pass -s my-dev1 --retry -d ~/files
                
 OPTIONS
 
@@ -167,7 +170,9 @@ OPTIONS
   --weight
     weighting for a field in query profile
   --analyzer
-    name or uri of analyzer                
+    name or uri of analyzer
+  --updates
+  	for directory uploads, look for changed files and store/upload those only                
 EOL
 
 mode = ARGV.shift
@@ -185,6 +190,7 @@ opts = GetoptLong::new(
          [ "--raw"             , GetoptLong::NO_ARGUMENT ],
          [ "--force"           , GetoptLong::NO_ARGUMENT ],
          [ "--retry"           , GetoptLong::NO_ARGUMENT ],
+         [ "--updates"         , GetoptLong::NO_ARGUMENT ],         
          [ "--field"           , GetoptLong::REQUIRED_ARGUMENT ],                             
          [ "--predicate"       , GetoptLong::REQUIRED_ARGUMENT ],
          [ "--weight"          , GetoptLong::REQUIRED_ARGUMENT ],
