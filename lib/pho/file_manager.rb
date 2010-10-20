@@ -4,6 +4,13 @@ module Pho
     
   module FileManagement
 
+    #Manages a collection of files in a directory structure, uploading them to 
+    #the contentbox of a platform store
+    #
+    #Allows the base directory of the upload to be specified, giving some flexibility
+    #on how the files are published via the contentbox. By default the files will
+    #be rooted in /items/ but by specifying the base parameter in the construct, this 
+    #can be altered to, e.g. /items/foo
     class FileManager < AbstractFileManager
    
       attr_reader :base

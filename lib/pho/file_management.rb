@@ -1,7 +1,31 @@
 module Pho
   
+  #This module provides support for managing local directories of files and mirroring them
+  #into either the metabox or contentbox of a Talis Platform store
   module FileManagement
 
+    #Base class for the management of collections of files
+    #
+    #A collection is considered to be a directory (and sub-directory) of files. Depending on 
+    #the type of collection manager used (e.g. +Pho::FileManagement::FileManager+ or 
+    #+Pho::FileManagement::RDFManager+) these may be collections of any kind of file, or just 
+    #RDF serialisations.
+    #
+    #The basic mechanism has support for:
+    # * tracking whether a file has been successfully loaded into a store (or not)
+    # * identifying all new files, just those that have been successfully stored, or failed
+    # * identifying files that have been changed locally since last stored
+    # * storage of any of these classes of files either by uploading into the contentbox or 
+    #   storing in the metabox
+    # * resumable uploads
+    # * retrying uploads
+    # * traversal across a directory structure to manage a complete set of files
+    #
+    #Files are tracked locally by keeping some hidden files in the same directory system as the 
+    #files being tracked. These are currently all managed in a hidden directory (".pho") that is 
+    #automatically created. To access error messages from uploads look for the corresponding "fail file" 
+    #for the relevant file. E.g. /foo/file.txt will be tracked in /foo/.pho, and will have either an 
+    #OK file (/foo/.pho/file.txt.ok) or a fail file (/foo/.pho/file.txt.fail). 
     class AbstractFileManager
     
       attr_reader :dir

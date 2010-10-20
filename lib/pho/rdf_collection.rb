@@ -2,10 +2,10 @@ module Pho
   
   module FileManagement
 
-      # Provides a simple mechanism for managing a directory of RDF/XML documents
-      # and uploading them to platform store.
+      #Provides a simple mechanism for managing a directory of RDF documents
+      #and uploading them to platform store.
       #
-      # Allows a collection to be mirrored into the platform
+      #Currently supports RDF, Turtle and NTriples
       class RDFManager < AbstractFileManager
       
         RDF = "rdf".freeze
