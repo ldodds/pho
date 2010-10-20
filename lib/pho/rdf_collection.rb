@@ -40,7 +40,8 @@ module Pho
           else
             response = @store.store_file(file)
           end
-                    
+          create_tracking_dir(filename)   
+                              
           if (response.status < 300 )
             File.open(get_ok_file_for(filename), "w") do |file|
               file.print( "OK" )            

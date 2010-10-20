@@ -186,7 +186,12 @@ module Pho
         relative_path = relative_path.gsub(base, "#{TRACKING_DIR}/#{base}")
         return "#{@dir}#{relative_path}.#{@ok_suffix}"              
       end
-                 
+       
+      def create_tracking_dir(filename)
+        path = filename.split("/")[0..-2].join("/")  
+        Dir.mkdir("#{path}/#{TRACKING_DIR}") unless File.exists?("#{path}/#{TRACKING_DIR}")
+      end
+                
     end
     
   end
