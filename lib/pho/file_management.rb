@@ -48,7 +48,7 @@ module Pho
         Dir.glob( File.join(@dir, "#{pattern}.#{@fail_suffix}") ).each do |file|
           File.delete(file)
         end
-        Dir.glob( File.join(@dir, "/#{TRACKING_DIR}/*.#{@ok_suffix}") ).each do |file|
+        Dir.glob( File.join(@dir, "#{pattern}.#{@ok_suffix}") ).each do |file|
           File.delete(file)
         end         
       end

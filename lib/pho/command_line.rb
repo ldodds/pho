@@ -201,26 +201,16 @@ module Pho
     def store_collection(collection)
       if @opts["force"]
         puts "Resetting tracking files for directory #{@opts["dir"]}"
-        collection.reset()
+        collection.reset( @opts["traverse"] ? true : false )
       end
       if @opts["retry"]
-        puts "Retrying failures in: #{@opts["dir"]}"        
-        if @opts["traverse"]
-          collection.retry_failures(:traverse)          
-          puts collection.summary(:traverse)
-        else
-          collection.retry_failures()          
-          puts collection.summary()            
-        end                   
+        puts "Retrying failures in: #{@opts["dir"]}"     
+        collection.retry_failures( @opts["traverse"] ? true : false )
+        puts collection.summary( @opts["traverse"] ? true : false )   
       else
-        puts "Uploading contents of directory: #{@opts["dir"]}"        
-        if @opts["traverse"]
-          collection.store(:traverse)          
-          puts collection.summary(:traverse)
-        else
-          collection.store()          
-          puts collection.summary()            
-        end                   
+        puts "Uploading contents of directory: #{@opts["dir"]}"
+        collection.store( @opts["traverse"] ? true : false )
+        puts collection.summary( @opts["traverse"] ? true : false )        
       end              
     end
     

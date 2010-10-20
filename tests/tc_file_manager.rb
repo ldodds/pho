@@ -233,19 +233,23 @@ class FileManagerTest < Test::Unit::TestCase
     collection = Pho::FileManagement::FileManager.new(store, "/tmp/pho")
   
     Dir.mkdir("/tmp/pho/b/.pho") unless File.exists?("/tmp/pho/b/.pho")
+    
     file = File.new( File.join("/tmp/pho/b/.pho", "0.txt.fail"), "w" )
     file.write("FAIL")
     file.close()      
     
     files = collection.failures(:recurse)
     assert_equal(4, files.size)        
+    assert_equal( true, files.include?("/tmp/pho/b/0.txt") )
         
     collection.reset(:recurse)
     newfiles = collection.new_files(:recurse)
     assert_equal(13, newfiles.size)        
+    assert_equal( true, newfiles.include?("/tmp/pho/b/0.txt") )
     
     files = collection.failures(:recurse)
-    assert_equal(0, files.size)        
+    assert_equal(0, files.size)
     
+    assert_equal( true, !File.exists?("/tmp/pho/b/.pho/0.txt.fail") )
   end    
 end
