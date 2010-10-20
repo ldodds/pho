@@ -63,6 +63,38 @@ module Pho
         return false
       end     
       
+      #Has this file changed (i.e have a newer mtime) than its tracking file
+      #Allows files that have been updated in a collection to be easily identified
+      #New files (i.e untracked) are not considered to be changed
+      def changed?(file)
+        ok_file = get_ok_file_for(file)
+        fail_file = get_fail_file_for(file)
+        f = File.new(file)        
+        if ( 
+            ( File.exists?(ok_file) && f.stat.mtime > File.new(ok_file).stat.mtime ) or
+            ( File.exists?(fail_file) && f.stat.mtime > File.new(fail_file).stat.mtime )
+           )
+          return true
+        end        
+        return false        
+      end
+      
+      def stored_files(recursive=false)
+        stored = Array.new
+        list(recursive).each do |file|
+          stored << file if stored?(file)
+        end
+        return stored
+      end
+      
+      def changed_files(recursive=false)
+        changed = Array.new
+        list(recursive).each do |file|
+          changed << file if changed?(file)
+        end
+        return changed
+      end
+            
       #List any new files in the directory
       def new_files(recursive=false)
         newfiles = Array.new
