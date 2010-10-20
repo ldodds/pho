@@ -128,9 +128,9 @@ class FileManagerTest < Test::Unit::TestCase
     6.times do |i|
       assert_equal( false, collection.changed?("/tmp/pho/#{i+1}.css"), "#{i+1}.css should not be changed" )
     end    
-    #untracked files are unchanged
+    #untracked files are also changed
     3.times do |i|
-      assert_equal( false, collection.changed?("/tmp/pho/#{i+7}.js"), "#{i+7}.js should not be changed" )
+      assert_equal( true, collection.changed?("/tmp/pho/#{i+7}.js"), "#{i+7}.js should not be changed" )
     end    
     
   end
@@ -139,7 +139,7 @@ class FileManagerTest < Test::Unit::TestCase
     store = Pho::Store.new("http://api.talis.com/stores/testing", "user", "pass")    
     collection = Pho::FileManagement::FileManager.new(store, "/tmp/pho")
     changed = collection.changed_files()
-    assert_equal( true, changed.empty? )
+    assert_equal( 3, changed.size )
     
     sleep(1)
     #check we're not creating it with the touch
@@ -148,7 +148,7 @@ class FileManagerTest < Test::Unit::TestCase
         
     changed = collection.changed_files()
     changed.sort!
-    assert_equal( 1, changed.size )
+    assert_equal( 4, changed.size )
     assert_equal( "/tmp/pho/0.css", changed[0] )
 
   end

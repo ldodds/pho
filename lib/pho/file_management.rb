@@ -78,8 +78,11 @@ module Pho
       
       #Has this file changed (i.e have a newer mtime) than its tracking file
       #Allows files that have been updated in a collection to be easily identified
-      #New files (i.e untracked) are not considered to be changed
+      #New files (i.e untracked) are always considered to be changed
       def changed?(file)
+        if !stored?(file)
+          return true
+        end
         ok_file = get_ok_file_for(file)
         fail_file = get_fail_file_for(file)
         f = File.new(file)        
