@@ -5,6 +5,8 @@ require 'yaml'
 require 'date'
 require 'rexml/document'
 require 'md5'
+require "digest/md5"
+require "ftools"
 
 #RDF.rb
 require 'rdf'
@@ -31,6 +33,7 @@ require 'pho/enrichment'
 require 'pho/command_line'
 require 'pho/oai'
 require 'pho/converter'
+require 'pho/upload.rb'
 
 if RUBY_VERSION < "1.8.7"
   class String

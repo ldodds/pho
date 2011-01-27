@@ -1,5 +1,13 @@
 Brief notes on significant changes and additions in each release
 
+== Version 0.7.9
+
+* Pho::FileManagement::Util.prepare_platform_upload for preparing batch uploads 
+  for use with RDFManager.
+    
+* Added initial support for converting and chunking files into smaller pieces 
+  for uploading into the Talis Platform. See Pho::FileManagement::FileSplitter.
+  
 == Version 0.7.8
 
 * Added --updates to allow for store/upload of only changed files
