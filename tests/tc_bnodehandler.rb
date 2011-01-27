@@ -33,9 +33,9 @@ class BNodeRewritingHandlerTest < Test::Unit::TestCase
     assert_equal(statement.predicate, handled.predicate)
     assert_equal(false, handled.subject.anonymous?)
     assert_equal(false, handled.object.anonymous?)
-    assert_equal("http://example.org/#{Digest::MD5.hexdigest( subject.id )}", 
+    assert_equal("http://example.org/#{Digest::MD5.hexdigest( subject.id )}#self", 
       handled.subject.to_s)
-    assert_equal("http://example.org/#{Digest::MD5.hexdigest( object.id )}", 
+    assert_equal("http://example.org/#{Digest::MD5.hexdigest( object.id )}#self", 
       handled.object.to_s)    
     
   end

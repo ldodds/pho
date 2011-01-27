@@ -76,18 +76,22 @@ module Pho
         RDF::Reader.for(format).new(File.new(filename)) do |reader|
           reader.each_statement do |statement|            
             count += 1
-            stmts << @handler.handle( statement )
+            stmts << @handler.handle( statement ) 
             if count % @triples == 0
               RDF::Writer.open( File.join(@dir, "#{basename}_#{count}.nt") ) do |writer|
-                writer << stmts
-                stmts = []
+                stmts.each do |s|
+                  writer << s
+                end
               end              
+              stmts = []              
             end
           end
         end
         if !stmts.empty?
           RDF::Writer.open( File.join(@dir, "#{basename}_#{count}.nt") ) do |writer|
-            writer << stmts
+            stmts.each do |s|
+              writer << s
+            end
           end
         end
       end
