@@ -111,7 +111,16 @@ module Pho
     class Util
 
       #Take a directory of files, copy them to temporary directory, splitting
-      #where necessary.      
+      #where necessary, in preparation for uploading to a platform store.
+      #
+      #Source directory is scanned for ntriple, turtle and RDF/XML files. All of 
+      #these are automatically chunked into 10,000 triple chunks and re-serialized 
+      #as ntriples
+      #
+      #BNodes are automatically re-written to full uris.
+      #
+      #  store:: Pho::Store into which data will be posted. Used to normalizing bnodes
+      #  src_dir:: directory containing source data.      
       def Util.prepare_platform_upload(store, src_dir, collection_dir, 
           triples=FileSplitter::DEFAULT_CHUNK_SIZE)
           
@@ -121,19 +130,25 @@ module Pho
           formats = [ ["*.rdf", :rdfxml], ["*.nt", :ntriples], ["*.ttl", :turtle] ]
           formats.each do |format|
             
-            to_split = []
             files = Dir.glob( File.join(src_dir, format[0] ) )
-            files.each do |file|
-              if File.size(file) > 2000000
-                to_split << file
-              else
-                File.copy(file, collection_dir)
-              end 
-            end
-            splitter.split_files(to_split, format[1] )
+            splitter.split_files(files, format[1] )
             
           end
+          return true
           
+      end
+      
+      #Prepares a batch of files for uploading into the platform, then posts
+      #that collection to the designated store
+      #
+      #Returns an RDFManager instance that can be inspected to check for successes
+      def Util.prepare_and_store_upload(store, src_dir, collection_dir, 
+          triples=FileSplitter::DEFAULT_CHUNK_SIZE)
+          
+        prepare_platform_upload(store, src_dir, collection_dir)
+        collection = Pho::FileManagement::RDFManager.new(store, collection_dir)
+        collection.store()
+        return collection
       end
       
     end
