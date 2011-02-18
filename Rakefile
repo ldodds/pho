@@ -37,6 +37,8 @@ SPEC =
     s.add_dependency("json", ">= 1.1.3")
     s.add_dependency("mocha", ">= 0.9.5")
     s.add_dependency("mime-types", ">= 1.16")
+    s.add_dependency("rdf")
+    s.add_dependency("rdf-json")
   end
       
 Rake::GemPackageTask.new(SPEC) do |pkg|
