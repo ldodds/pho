@@ -4,7 +4,7 @@ require 'json'
 require 'yaml'
 require 'date'
 require 'rexml/document'
-require 'md5'
+#require 'md5'
 require "digest/md5"
 require "ftools"
 
